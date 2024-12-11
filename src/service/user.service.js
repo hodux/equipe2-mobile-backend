@@ -1,7 +1,6 @@
 import mysql from 'mysql2';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import dotenv from "dotenv";
+dotenv.config({path: "../.env"});
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -10,16 +9,27 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
 }).promise()
 
+
 export async function createUser(username, email, password){
     //DEBUG
     console.log(`Queries.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
     //QUERY
-    const query = await pool.query(`INSERT INTO users (username,email,password) VALUES (?,?,?);`,[username,email,password])
-    const [rows] = await pool.query(`SELECT user_id, username, email FROM users WHERE username=? and email=?`,[username,email])
-    return rows[0]
+    const [check] = await pool.query(`SELECT user_id FROM users WHERE username=? or email=?`,[username,email])
+    if(check.length === 0){
+        const [query] = await pool.query(`INSERT INTO users (username,email,password) VALUES (?,?,?);`,[username,email,password])
+        const [rows] = await pool.query(`SELECT user_id, username, email FROM users WHERE username=? and email=?`,[username,email])
+        return {
+            "flag" :Boolean(query.affectedRows),
+            "user": rows[0]
+        }
+    }
+    return{
+        "flag" : false,
+        "user": null
+    };
 }
 //TEST
-//console.log(await createUser("bob","bob@bob.bob", "bob"));
+// console.log(await createUser("a","a", "bob"));
 
 export async function getUserById(id){
     //DEBUG
@@ -29,8 +39,7 @@ export async function getUserById(id){
     return rows[0];
 }
 //TEST
-//console.log(await getUserById(1))
-
+// console.log(await getUserById(1))
 export async function login(usernameEmail, password){
     //DEBUG
     console.log(`Queries.js : authentificate with username or email: ${usernameEmail}`)
