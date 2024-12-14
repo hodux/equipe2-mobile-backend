@@ -1,6 +1,6 @@
 import mysql from 'mysql2';
 import dotenv from "dotenv";
-dotenv.config({path: "../.env"});
+dotenv.config();
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -54,7 +54,10 @@ export async function updateUser(username, email, id){
     console.log(`Queries.js : update users with userData.id : ${id}`)
     //QUERY
     const [rows] = await pool.query(`UPDATE users SET username = ?, email = ? WHERE user_id = ?;`,[username,email,id])
-    return true
+    return {
+        "flag" :Boolean(rows.affectedRows),
+        "user": rows[0]
+    }
 }
 //TEST
 //console.log(await updateUser(toto, toto@gmail.com, 1));
@@ -63,7 +66,7 @@ export async function deleteUserById(id){
     console.log(`Database : delete users with id : ${id}`)
     //
     const status = await pool.query(`DELETE FROM users WHERE user_id = ?;`,[id])
-    return status[0].affectedRows;
+    return Boolean(status[0].affectedRows);
 }
 //TEST
 // console.log(await deleteUserById(1));
