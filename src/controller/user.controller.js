@@ -1,4 +1,5 @@
 import {createUser, getUserById, updateUser, deleteUserById, login} from "../service/user.service.js";
+import jwt from "jsonwebtoken";
 
 
 function passwordCheck(password){
@@ -11,9 +12,15 @@ export default class UserController {
         let email = req.body.email;
         let password = req.body.password;
         if (username || email || passwordCheck(password)) {
-            let response = await createUser(username, email, password);
-            if (response.flag) {
-                res.status(201).send("User created successfully");
+            let user = await createUser(username, email, password);
+            if (user.flag) {
+                const token = jwt.sign({userID:user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+                res.status(200).json({
+                    token,
+                    id: user.user_id,
+                    username: user.username,
+                    email: user.email
+                });
             } else {
                 res.status(200).send("User already exists");
             }
@@ -40,7 +47,14 @@ export default class UserController {
         if (usernameEmail || password) {
             let user = await login(usernameEmail, password);
             if (user) {
-                res.status(200).json(user);
+                const token = jwt.sign({userID:user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+                res.status(200).json({
+                    token,
+                    id: user.user_id,
+                    username: user.username,
+                    email: user.email
+                });
+
             } else {
                 res.status(404).send("User not found with these parameters");
             }
@@ -55,7 +69,7 @@ export default class UserController {
         let password = req.body.password;
         let email = req.body.email;
         if (username || email || passwordCheck(password)) {
-            let response = await updateUser(id, username, password);
+            let response = await updateUser(username,email, password, id);
             if (response.flag) {
                 res.status(200).send("User updated successfully");
             }else{

@@ -4,6 +4,7 @@ dotenv.config();
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE
@@ -49,11 +50,11 @@ export async function login(usernameEmail, password){
 }
 //TEST
 //console.log(await login(bob, bob));
-export async function updateUser(username, email, id){
+export async function updateUser(username, email, password, id){
     //DEBUG
     console.log(`Queries.js : update users with userData.id : ${id}`)
     //QUERY
-    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ? WHERE user_id = ?;`,[username,email,id])
+    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?;`,[username,email,password,id])
     return {
         "flag" :Boolean(rows.affectedRows),
         "user": rows[0]
