@@ -46,7 +46,7 @@ export default class UserController {
         let password = req.body.password;
         if (usernameEmail || password) {
             let user = await login(usernameEmail, password);
-            if (user) {
+            if (user != null) {
                 const token = jwt.sign({userID:user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
                 res.status(200).json({
                     token,

@@ -1,5 +1,6 @@
 import mysql from 'mysql2';
 import dotenv from "dotenv";
+import bcrypt from 'bcryptjs';
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -12,6 +13,7 @@ const pool = mysql.createPool({
 
 
 export async function createUser(username, email, password){
+    password = bcrypt.hashSync(password, 10);
     //DEBUG
     console.log(`Queries.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
     //QUERY
@@ -45,8 +47,12 @@ export async function login(usernameEmail, password){
     //DEBUG
     console.log(`Queries.js : authentificate with username or email: ${usernameEmail}`)
     //QUERY
-    const [user] = await pool.query(`SELECT * FROM users WHERE (username=? OR email=?) AND password=?;`,[usernameEmail,usernameEmail,password])
-    return user[0];
+    const [user] = await pool.query(`SELECT * FROM users WHERE (username=? OR email=?);`,[usernameEmail,usernameEmail]);
+    if(await bcrypt.compareSync(password, user[0].password)){
+        return user[0];
+    }
+    return null;
+
 }
 //TEST
 //console.log(await login(bob, bob));
