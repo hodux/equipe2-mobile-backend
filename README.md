@@ -6,5 +6,5 @@
 * Mathieu G. Sousa - GitHub: hodux
 =======
 ### Étapes
-* Exécuter le script " scripts.sql " avec la commande  " mysql -u root -p < scripts.sql "  
+* Exécuter le script " makeBD.sql " avec la commande  " mysql -u root -p < makeBD.sql "  
 Lien Frontend | https://github.com/hodux/equipe2-mobile-frontend
