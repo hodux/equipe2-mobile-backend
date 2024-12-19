@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 export async function createUser(username, email, password){
     password = bcrypt.hashSync(password, 10);
     //DEBUG
-    console.log(`Queries.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
+    console.log(`user.service.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
     //QUERY
     const [check] = await pool.query(`SELECT user_id FROM users WHERE username=? or email=?`,[username,email])
     if(check.length === 0){
@@ -36,7 +36,7 @@ export async function createUser(username, email, password){
 
 export async function getUserById(id){
     //DEBUG
-    console.log(`Queries.js : retriving user with id: ${id}`)
+    console.log(`user.service.js : retriving user with id: ${id}`)
     //QUERY
     const [rows] = await pool.query('SELECT user_id, username, email FROM users where user_id=?', [id]);
     return rows[0];
@@ -45,11 +45,13 @@ export async function getUserById(id){
 // console.log(await getUserById(1))
 export async function login(usernameEmail, password){
     //DEBUG
-    console.log(`Queries.js : authentificate with username or email: ${usernameEmail}`)
+    console.log(`user.service.js : authentificate with username or email: ${usernameEmail}`)
     //QUERY
     const [user] = await pool.query(`SELECT * FROM users WHERE (username=? OR email=?);`,[usernameEmail,usernameEmail]);
-    if(await bcrypt.compareSync(password, user[0].password)){
-        return user[0];
+    if(user[0] !== undefined){
+        if(await bcrypt.compareSync(password, user[0].password)){
+            return user[0];
+        }
     }
     return null;
 
@@ -58,7 +60,7 @@ export async function login(usernameEmail, password){
 //console.log(await login(bob, bob));
 export async function updateUser(username, email, password, id){
     //DEBUG
-    console.log(`Queries.js : update users with userData.id : ${id}`)
+    console.log(`user.service.js : update users with userData.id : ${id}`)
     //QUERY
     const [rows] = await pool.query(`UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?;`,[username,email,password,id])
     return {
@@ -70,7 +72,7 @@ export async function updateUser(username, email, password, id){
 //console.log(await updateUser(toto, toto@gmail.com, 1));
 export async function deleteUserById(id){
     //DEBUG
-    console.log(`Database : delete users with id : ${id}`)
+    console.log(`user.service.js : delete users with id : ${id}`)
     //
     const status = await pool.query(`DELETE FROM users WHERE user_id = ?;`,[id])
     return Boolean(status[0].affectedRows);
