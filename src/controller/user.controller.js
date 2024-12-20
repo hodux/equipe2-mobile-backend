@@ -92,5 +92,23 @@ export default class UserController {
             res.status(400).send("Error with parameter");
         }
     }
+    async Authenticate(req, res) {
+        try {
+            const token = req.headers['authorization']?.split(' ')[1];
+            if (!token) return res.status(403).send('Forbidden');
+             // Verify the token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET); // Synchronous verification
+            if (!decoded?.userID) {
+                return res.status(409).json({ error: "Forbidden: badToken" });
+            }
+            console.log(decoded);
+            res.status(200).json({
+                id: decoded.userID,
+            });
+        } catch (error) {
+            console.error('Error during authenticate: ', error);
+            res.status(500).json({ error: 'Internal server error.' });
+        }
+    };
 }
 
