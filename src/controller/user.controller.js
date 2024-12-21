@@ -12,14 +12,14 @@ export default class UserController {
         let email = req.body.email;
         let password = req.body.password;
         if (username || email || passwordCheck(password)) {
-            let user = await createUser(username, email, password);
-            if (user.flag) {
-                const token = jwt.sign({userID:user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+            let response = await createUser(username, email, password);
+            if (response.flag) {
+                const token = jwt.sign({userID:response.user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
                 res.status(200).json({
                     token,
-                    id: user.user_id,
-                    username: user.username,
-                    email: user.email
+                    id: response.user.user_id,
+                    username: response.user.username,
+                    email: response.user.email
                 });
             } else {
                 res.status(200).send("User already exists");
