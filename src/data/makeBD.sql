@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(20) NOT NULL,
   `email` varchar(100) NOT NULL NULL,
   `password` varchar(100) NOT NULL,
+  `favoriteMovie` varchar(50),
   PRIMARY KEY (`user_id`)
 );
 CREATE TABLE IF NOT EXISTS Movies (

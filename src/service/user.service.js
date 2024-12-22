@@ -79,3 +79,20 @@ export async function deleteUserById(id){
 }
 //TEST
 // console.log(await deleteUserById(1));
+export async function updateUserFavoriteMovie(movieName, id){
+    //DEBUG
+    console.log(`user.service.js : update user's favorite movie with userData.id : ${id} and with the movie = ${movieName}`)
+    //QUERY
+    const [rows] = await pool.query(`UPDATE users SET favoriteMovie = ? WHERE user_id = ?;`,[movieName,id])
+    return {
+        "flag" :Boolean(rows.affectedRows),
+        "user": rows[0]
+    }
+}
+export async function getUserFavoriteMovieById(id){
+    //DEBUG
+    console.log(`user.service.js : retriving user's favorite movie with id: ${id}`)
+    //QUERY
+    const [rows] = await pool.query('SELECT favoriteMovie FROM users where user_id=?', [id]);
+    return rows[0];
+}

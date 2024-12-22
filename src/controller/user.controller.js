@@ -1,4 +1,11 @@
-import {createUser, getUserById, updateUser, deleteUserById, login} from "../service/user.service.js";
+import {
+    createUser,
+    getUserById,
+    updateUser,
+    deleteUserById,
+    login,
+    updateUserFavoriteMovie, getUserFavoriteMovieById
+} from "../service/user.service.js";
 import jwt from "jsonwebtoken";
 
 
@@ -110,5 +117,32 @@ export default class UserController {
             res.status(500).json({ error: 'Internal server error.' });
         }
     };
+    async updateUserFavoriteMovie(req, res) {
+        let id = req.params.id;
+        let movieName = req.body.movieName;
+        if (id && movieName) {
+            let response = await updateUserFavoriteMovie(movieName,id);
+            if (response.flag) {
+                res.status(200).send("User modified successfully");
+            } else {
+                res.status(404).send("User not found");
+            }
+        } else {
+            res.status(400).send("Error with parameter");
+        }
+    }
+    async getUserFavoriteMovie(req, res) {
+        let id = req.params.id;
+        if (id) {
+            let response = await getUserFavoriteMovieById(id);
+            if (response) {
+                res.status(200).json(response);
+            } else {
+                res.status(404).send("User not found");
+            }
+        } else {
+            res.status(400).send("Error with parameter");
+        }
+    }
 }
 
