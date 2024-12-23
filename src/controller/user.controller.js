@@ -73,10 +73,9 @@ export default class UserController {
     async UpdateUser(req, res) {
         let id = req.params.id;
         let username = req.body.username;
-        let password = req.body.password;
         let email = req.body.email;
-        if (username || email || passwordCheck(password)) {
-            let response = await updateUser(username,email, password, id);
+        if (username || email ) {
+            let response = await updateUser(username, email, id);
             if (response.flag) {
                 res.status(200).send("User updated successfully");
             }else{

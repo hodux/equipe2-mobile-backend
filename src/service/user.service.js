@@ -50,11 +50,11 @@ export async function login(usernameEmail, password){
 }
 //TEST
 //console.log(await login(bob, bob));
-export async function updateUser(username, email, password, id){
+export async function updateUser(username, email, id){
     //DEBUG
     console.log(`user.service.js : update users with userData.id : ${id}`)
     //QUERY
-    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?;`,[username,email,password,id])
+    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ? WHERE id = ?;`,[username,email,id])
     return {
         "flag" :Boolean(rows.affectedRows),
         "user": rows[0]
