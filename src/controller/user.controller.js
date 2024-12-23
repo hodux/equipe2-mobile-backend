@@ -7,7 +7,7 @@ import {
     updateUserFavoriteMovie, getUserFavoriteMovieById
 } from "../service/user.service.js";
 import jwt from "jsonwebtoken";
-
+import {config} from "../config/config.js";
 
 function passwordCheck(password){
     const regex = new RegExp('^.{8,}$');
@@ -21,10 +21,10 @@ export default class UserController {
         if (username || email || passwordCheck(password)) {
             let response = await createUser(username, email, password);
             if (response.flag) {
-                const token = jwt.sign({userID:response.user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+                const token = jwt.sign({userID:response.user.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
                 res.status(200).json({
                     token,
-                    id: response.user.user_id,
+                    id: response.user.id,
                     username: response.user.username,
                     email: response.user.email
                 });
@@ -54,10 +54,10 @@ export default class UserController {
         if (usernameEmail || password) {
             let user = await login(usernameEmail, password);
             if (user != null) {
-                const token = jwt.sign({userID:user.user_id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+                const token = jwt.sign({userID:user.id}, config.jwtSecret, {expiresIn: '1h'});
                 res.status(200).json({
                     token,
-                    id: user.user_id,
+                    id: user.id,
                     username: user.username,
                     email: user.email
                 });
@@ -104,7 +104,7 @@ export default class UserController {
             const token = req.headers['authorization']?.split(' ')[1];
             if (!token) return res.status(403).send('Forbidden');
              // Verify the token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET); // Synchronous verification
+            const decoded = jwt.verify(token, config.jwtSecret); // Synchronous verification
             if (!decoded?.userID) {
                 return res.status(409).json({ error: "Forbidden: badToken" });
             }

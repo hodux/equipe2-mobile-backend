@@ -1,26 +1,18 @@
 import mysql from 'mysql2';
-import dotenv from "dotenv";
 import bcrypt from 'bcryptjs';
-dotenv.config();
+import {config} from "../config/config.js";
 
-const pool = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-}).promise()
-
+const pool = mysql.createPool(config.pool).promise()
 
 export async function createUser(username, email, password){
     password = bcrypt.hashSync(password, 10);
     //DEBUG
     console.log(`user.service.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
     //QUERY
-    const [check] = await pool.query(`SELECT user_id FROM users WHERE username=? or email=?`,[username,email])
+    const [check] = await pool.query(`SELECT id FROM users WHERE username=? or email=?`,[username,email])
     if(check.length === 0){
         const [query] = await pool.query(`INSERT INTO users (username,email,password) VALUES (?,?,?);`,[username,email,password])
-        const [rows] = await pool.query(`SELECT user_id, username, email FROM users WHERE username=? and email=?`,[username,email])
+        const [rows] = await pool.query(`SELECT id, username, email FROM users WHERE username=? and email=?`,[username,email])
         return {
             "flag" :Boolean(query.affectedRows),
             "user": rows[0]
@@ -38,7 +30,7 @@ export async function getUserById(id){
     //DEBUG
     console.log(`user.service.js : retriving user with id: ${id}`)
     //QUERY
-    const [rows] = await pool.query('SELECT user_id, username, email FROM users where user_id=?', [id]);
+    const [rows] = await pool.query('SELECT id, username, email FROM users where id=?', [id]);
     return rows[0];
 }
 //TEST
@@ -62,7 +54,7 @@ export async function updateUser(username, email, password, id){
     //DEBUG
     console.log(`user.service.js : update users with userData.id : ${id}`)
     //QUERY
-    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?;`,[username,email,password,id])
+    const [rows] = await pool.query(`UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?;`,[username,email,password,id])
     return {
         "flag" :Boolean(rows.affectedRows),
         "user": rows[0]
@@ -74,7 +66,7 @@ export async function deleteUserById(id){
     //DEBUG
     console.log(`user.service.js : delete users with id : ${id}`)
     //
-    const status = await pool.query(`DELETE FROM users WHERE user_id = ?;`,[id])
+    const status = await pool.query(`DELETE FROM users WHERE id = ?;`,[id])
     return Boolean(status[0].affectedRows);
 }
 //TEST
@@ -83,7 +75,7 @@ export async function updateUserFavoriteMovie(movieName, id){
     //DEBUG
     console.log(`user.service.js : update user's favorite movie with userData.id : ${id} and with the movie = ${movieName}`)
     //QUERY
-    const [rows] = await pool.query(`UPDATE users SET favoriteMovie = ? WHERE user_id = ?;`,[movieName,id])
+    const [rows] = await pool.query(`UPDATE users SET favoriteMovie = ? WHERE id = ?;`,[movieName,id])
     return {
         "flag" :Boolean(rows.affectedRows),
         "user": rows[0]
@@ -93,6 +85,6 @@ export async function getUserFavoriteMovieById(id){
     //DEBUG
     console.log(`user.service.js : retriving user's favorite movie with id: ${id}`)
     //QUERY
-    const [rows] = await pool.query('SELECT favoriteMovie FROM users where user_id=?', [id]);
+    const [rows] = await pool.query('SELECT favoriteMovie FROM users where id=?', [id]);
     return rows[0];
 }

@@ -1,17 +1,18 @@
-DROP DATABASE IF EXISTS `exam`;
-CREATE DATABASE IF NOT EXISTS `exam`;
-USE `exam`;
+DROP DATABASE IF EXISTS howah;
+CREATE DATABASE IF NOT EXISTS howah;
+USE howah;
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS users ;
+CREATE TABLE IF NOT EXISTS users (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `email` varchar(100) NOT NULL NULL,
   `password` varchar(100) NOT NULL,
-  `favoriteMovie` varchar(50),
-  PRIMARY KEY (`user_id`)
+  `favoriteMovie` varchar(50)
 );
-CREATE TABLE IF NOT EXISTS Movies (
+
+DROP TABLE IF EXISTS movies;
+CREATE TABLE IF NOT EXISTS movies (
     id INT PRIMARY KEY,
     url TEXT,
     title VARCHAR(40),
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Movies (
     type VARCHAR(20)
 );
 
-INSERT INTO Movies (id, url, title, primaryImage, description, startYear, endYear, runtimeMinutes, contentRating, averageRating, numVotes, type) VALUES
+INSERT INTO movies (id, url, title, primaryImage, description, startYear, endYear, runtimeMinutes, contentRating, averageRating, numVotes, type) VALUES
  (1, "6COmYeLsz4c", "Wicked", "https://m.media-amazon.com/images/M/MV5BOWMwYjYzYmMtMWQ2Ni00NWUwLTg2MzAtYzkzMDBiZDIwOTMwXkEyXkFqcGc@._V1_.jpg", "Elphaba, a misunderstood young woman because of her green skin, and Glinda, a popular girl, become friends at Shiz University in the Land of Oz. After an encounter with the Wonderful Wizard of Oz, their friendship reaches a crossroads.", 2024, NULL, 160, "PG", 8.1, 41644, "movie"),
  (2, "YZf8zpchbXE", "Gladiator II", "https://m.media-amazon.com/images/M/MV5BMWYzZTM5ZGQtOGE5My00NmM2LWFlMDEtMGNjYjdmOWM1MzA1XkEyXkFqcGc@._V1_.jpg", "After his home is conquered by the tyrannical emperors who now lead Rome, Lucius is forced to enter the Colosseum and must look to his past to find strength to return the glory of Rome to its people.", 2024, NULL, 148, "R", 6.9, 87129, "movie"),
  (3, "hDZ7y8RP5HE", "Moana 2", "https://m.media-amazon.com/images/M/MV5BZDUxNThhYTUtYjgxNy00MGQ4LTgzOTEtZjg1YTU5NTcwNThlXkEyXkFqcGc@._V1_.jpg", "After receiving an unexpected call from her wayfinding ancestors, Moana must journey to the far seas of Oceania and into dangerous, long-lost waters for an adventure unlike anything she's ever faced.", 2024, NULL, 100, "PG", 7.1, 18875, "movie"),
