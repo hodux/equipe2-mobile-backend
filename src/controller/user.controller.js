@@ -63,7 +63,7 @@ export default class UserController {
                 });
 
             } else {
-                res.status(404).send("User not found with these parameters");
+                res.status(401).send("Incorrect username or password");
             }
         } else {
             res.status(400).send("Error with parameter");
