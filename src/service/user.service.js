@@ -10,7 +10,7 @@ export async function createUser(username, email, password){
     console.log(`user.service.js : creating user with email: ${email}, username: ${username} and password : ${password}`)
     //QUERY
     const [check] = await pool.query(`SELECT id FROM users WHERE username=? or email=?`,[username,email])
-    if(check.length === 0){
+    if(!check[0]){
         const [query] = await pool.query(`INSERT INTO users (username,email,password) VALUES (?,?,?);`,[username,email,password])
         const [rows] = await pool.query(`SELECT id, username, email FROM users WHERE username=? and email=?`,[username,email])
         return {
