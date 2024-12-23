@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
 import userRoute from "./route/user.route.js";
-import dotenv from "dotenv";
-dotenv.config();
+import movieRoute from "./route/movie.route.js";
+import {config} from "./config/config.js";
+
 const app = express();
+
 app.use(cors());
 app.use(express.json());
-const port = process.env.PORT || 8080;
+
+const port = config.port;
 app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`)
 });
@@ -16,3 +19,4 @@ app.get("/", (req, res) => {
 })
 
 app.use(userRoute);
+app.use(movieRoute);
