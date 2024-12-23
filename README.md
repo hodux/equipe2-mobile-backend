@@ -34,7 +34,7 @@ JWT_SECRET = tpmobile
 ```
 2. Créez la BD 
 ```sh 
-mysql -u root -p < src/data/schema.sql
+mysql -u root -p < src/data/makeBD.sql
 ```
 3. Installez les dépendances
 ```sh
